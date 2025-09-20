@@ -1,96 +1,349 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR сцена с кнопкой</title>
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #2c3e50;
-            font-family: Arial, sans-serif;
-        }
-        
-        #buttonContainer {
-            text-align: center;
-        }
-        
-        #openARButton {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-        }
-        
-        #openARButton:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-        }
-        
-        #arScene {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-        
-        .close-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Союзмультпарк - AR приложение</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* --- Светлая тема --- */
+    body.light-theme {
+      background: #f5f5f5;
+      color: #222;
+    }
+    body.light-theme .footer {
+      background: #ddd;
+      color: #333;
+    }
+    body.light-theme .footer a {
+      color: #ff6600;
+    }
+    body.light-theme .feature {
+      background: #fff;
+      color: #000;
+    }
+    body.light-theme .about p {
+      color: #333;
+    }
+    body.light-theme .about h2 {
+      color: #ff6600;
+    }
+    body.light-theme .hero h1 {
+      color: #222;
+    }
+    body.light-theme .hero p {
+      color: #333;
+    }
+
+    /* --- Переключатель темы --- */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(45deg, #ff6600, #ffcc00);
+      border: none;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 2000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      gap: 16px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      max-width: 800px;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+
+    /* main CTA is an anchor so it opens index.html */
+    #openARButton {
+      display: inline-block;
+      background: linear-gradient(45deg, #ff6600, #ffcc00);
+      color: white;
+      border: none;
+      padding: 16px 36px;
+      font-size: 20px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 102, 0, 0.6);
+      transition: transform 0.22s, box-shadow 0.22s;
+      text-decoration: none;
+      text-align: center;
+    }
+    #openARButton:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(255,102,0,0.8); }
+
+    /* small inline preview AR button */
+    #openInlineARButton {
+      display: inline-block;
+      background: transparent;
+      color: inherit;
+      border: 2px solid rgba(255,255,255,0.12);
+      padding: 10px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.18s;
+    }
+    #openInlineARButton:hover { transform: translateY(-3px); border-color: rgba(255,204,0,0.9); }
+
+    /* --- About --- */
+    .about {
+      padding: 60px 20px;
+      max-width: 1400px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      color: #ffcc00;
+    }
+
+    .about p {
+      max-width: 900px;
+      margin: auto;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+      color: #ddd;
+    }
+
+    /* gallery: images will be wide and keep aspect ratio */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      align-items: center;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto; /* important — preserves original proportions, avoids squashing */
+      border-radius: 12px;
+      box-shadow: 0 6px 26px rgba(0,0,0,0.5);
+      transition: transform 0.25s;
+      object-fit: cover;
+    }
+    .gallery img:hover { transform: scale(1.03); }
+
+    /* --- Features --- */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px 20px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .feature {
+      background: rgba(255,255,255,0.06);
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+      transition: transform 0.3s;
+    }
+    .feature h3 { font-size: 1.25rem; margin-bottom: 8px; color: #ffcc00; }
+
+    /* --- Footer --- */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background: #111;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .footer a { color: #ffcc00; text-decoration: none; }
+
+    /* AR overlay (keeps previous functionality available) */
+    .ar-scene {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.96);
+    }
+    .close-button {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    /* responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 1rem; }
+      .about h2 { font-size: 1.6rem; }
+      #openARButton { font-size: 18px; padding: 12px 28px; }
+    }
+  </style>
 </head>
 <body>
-    <div id="buttonContainer">
-        <button id="openARButton">Открыть AR сцену</button>
-    </div>
 
-    <div id="arScene">
-        <button class="close-button" onclick="closeAR()">X</button>
-        <a-scene mindar-image="imageTargetSrc: ./targets.mind; filterMinCF:0.000001; filterBeta: 1; warmupTolerance: 10; missTolerance: 10" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-            <a-assets>
-                <a-asset-item id="revolver" src="models/revolver/scene.gltf"></a-asset-item>
-            </a-assets>
-            <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-            <a-entity mindar-image-target="targetIndex: 0">
-                <a-gltf-model rotation="0 180 0 " position="-0.2 -0.15 0.1" scale="1.005 1.005 1.005" src="#revolver">
-            </a-entity>
-        </a-scene>
-    </div>
+  <!-- Темы -->
+  <button class="theme-toggle" id="themeToggle">🌗 Тема</button>
 
-    <script>
-        document.getElementById('openARButton').addEventListener('click', function() {
-            document.getElementById('buttonContainer').style.display = 'none';
-            document.getElementById('arScene').style.display = 'block';
-        });
-        
-        function closeAR() {
-            document.getElementById('buttonContainer').style.display = 'block';
-            document.getElementById('arScene').style.display = 'none';
-        }
-    </script>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Добро пожаловать в Союзмультпарк 🎉</h1>
+    <p>Попробуй технологии дополненной реальности прямо здесь на сайте — а внутри парка тебя ждут десятки уникальных развлечений, где оживают любимые герои мультфильмов!</p>
+
+    <!-- MAIN: открывает index.html (в той же вкладке). 
+         Если хочешь открывать в новой вкладке — добавь target="_blank" в <a>. -->
+    <a id="openARButton" href="index.html" role="button" aria-label="Открыть index.html">🚀 Попробовать AR</a>
+  </section>
+
+  <!-- About -->
+  <section class="about">
+    <h2 id="aboutTitle">Что такое Союзмультпарк?</h2>
+    <p>Это культурно-развлекательный центр нового поколения, где классика советской и российской анимации встречается с новейшими технологиями. Вас ждут более 30 аттракционов на площади 2000 м²: от дополненной и виртуальной реальности до интерактивных мастерских и мультстудий.</p>
+
+    <div class="gallery" aria-hidden="false">
+      <!-- Поставь свои реальные пути к картинкам -->
+      <img src="1.jpg" alt="Аттракцион 1">
+      <img src="2.jpg" alt="Аттракцион 2">
+      <img src="3.jpg" alt="Аттракцион 3">
+      <img src="4.jpg" alt="Аттракцион 4">
+      <img src="6.jpg" alt="Аттракцион 5">
+      <img src="7.jpg" alt="Аттракцион 6">
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="feature">
+      <h3>🔄 Дополненная реальность</h3>
+      <p>Оживите любимых персонажей прямо у себя на экране с помощью AR.</p>
+    </div>
+    <div class="feature">
+      <h3>🎬 VR-аттракционы</h3>
+      <p>Погрузитесь в виртуальный мир и отправьтесь в невероятные приключения.</p>
+    </div>
+    <div class="feature">
+      <h3>🎨 Интерактивные зоны</h3>
+      <p>Создавайте мультфильмы своими руками в креативных зонах парка.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Официальный сайт: <a id="officialLink" href="https://souzmultpark.ru/" target="_blank" rel="noopener">souzmultpark.ru</a></p>
+    <p>© Союзмультпарк, 2023. Все права защищены.</p>
+  </footer>
+
+  <!-- AR Scene (встраиваемый оверлей) -->
+  <div id="arScene" class="ar-scene" aria-hidden="true">
+    <button class="close-button" id="closeAR">✕</button>
+
+    <!-- Здесь оставлен старый A-Frame блок, если у тебя подключены библиотеки -->
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
+      <a-assets>
+        <a-asset-item id="revolver" src="models/revolver/scene.gltf"></a-asset-item>
+      </a-assets>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model rotation="0 180 0" position="-0.2 -0.15 0.1" scale="1 1 1" src="#revolver"></a-gltf-model>
+      </a-entity>
+    </a-scene>
+  </div>
+
+  <script>
+    // -----------------------
+    // Theme: toggle + save
+    // -----------------------
+    const themeToggle = document.getElementById('themeToggle');
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.textContent = '🌞 Светлая';
+      } else {
+        document.body.classList.remove('light-theme');
+        themeToggle.textContent = '🌗 Тёмная';
+      }
+      try { localStorage.setItem('siteTheme', theme); } catch (e) { /* localStorage может быть недоступен */ }
+    }
+
+    // init from localStorage (или по умолчанию тёмная)
+    (function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem('siteTheme'); } catch(e) { /* ignore */ }
+      if (saved === 'light') applyTheme('light'); else applyTheme('dark');
+    })();
+
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.body.classList.contains('light-theme');
+      applyTheme(isLight ? 'dark' : 'light');
+    });
+
+    // -----------------------
+    // AR overlay open/close
+    // -----------------------
+    const openInlineBtn = document.getElementById('openInlineARButton');
+    const arScene = document.getElementById('arScene');
+    const closeARBtn = document.getElementById('closeAR');
+
+    openInlineBtn.addEventListener('click', () => {
+      arScene.style.display = 'block';
+      arScene.setAttribute('aria-hidden', 'false');
+      // optionally stop page scroll on mobile:
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeARBtn.addEventListener('click', () => {
+      arScene.style.display = 'none';
+      arScene.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    });
+  </script>
 </body>
 </html>
