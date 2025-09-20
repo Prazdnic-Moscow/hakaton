@@ -24,29 +24,15 @@
       background: #f5f5f5;
       color: #222;
     }
-    body.light-theme .footer {
-      background: #ddd;
-      color: #333;
-    }
-    body.light-theme .footer a {
-      color: #ff6600;
-    }
-    body.light-theme .feature {
-      background: #fff;
-      color: #000;
-    }
-    body.light-theme .about p {
-      color: #333;
-    }
-    body.light-theme .about h2 {
-      color: #ff6600;
-    }
-    body.light-theme .hero h1 {
-      color: #222;
-    }
-    body.light-theme .hero p {
-      color: #333;
-    }
+    body.light-theme .footer { background: #ddd; color: #333; }
+    body.light-theme .footer a { color: #ff6600; }
+    body.light-theme .feature { background: #fff; color: #000; }
+    body.light-theme .about p { color: #333; }
+    body.light-theme .about h2 { color: #ff6600; }
+    body.light-theme .about h3 { color: #ff6600; }
+    body.light-theme .feature h3 { color: #ff6600; }
+    body.light-theme .hero h1 { color: #222; }
+    body.light-theme .hero p { color: #333; }
 
     /* --- Переключатель темы --- */
     .theme-toggle {
@@ -77,18 +63,9 @@
       gap: 16px;
     }
 
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 8px;
-    }
+    .hero h1 { font-size: 3rem; margin-bottom: 8px; }
+    .hero p { max-width: 800px; font-size: 1.15rem; margin-bottom: 8px; }
 
-    .hero p {
-      max-width: 800px;
-      font-size: 1.15rem;
-      margin-bottom: 8px;
-    }
-
-    /* main CTA is an anchor so it opens index.html */
     #openARButton {
       display: inline-block;
       background: linear-gradient(45deg, #ff6600, #ffcc00);
@@ -106,20 +83,6 @@
     }
     #openARButton:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(255,102,0,0.8); }
 
-    /* small inline preview AR button */
-    #openInlineARButton {
-      display: inline-block;
-      background: transparent;
-      color: inherit;
-      border: 2px solid rgba(255,255,255,0.12);
-      padding: 10px 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.18s;
-    }
-    #openInlineARButton:hover { transform: translateY(-3px); border-color: rgba(255,204,0,0.9); }
-
     /* --- About --- */
     .about {
       padding: 60px 20px;
@@ -133,7 +96,6 @@
       margin-bottom: 20px;
       color: #ffcc00;
     }
-
     .about p {
       max-width: 900px;
       margin: auto;
@@ -142,23 +104,39 @@
       color: #ddd;
     }
 
-    /* gallery: images will be wide and keep aspect ratio */
+    /* --- Gallery --- */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
       align-items: center;
     }
-
     .gallery img {
       width: 100%;
-      height: auto; /* important — preserves original proportions, avoids squashing */
+      height: auto;
       border-radius: 12px;
       box-shadow: 0 6px 26px rgba(0,0,0,0.5);
       transition: transform 0.25s;
       object-fit: cover;
+      cursor: pointer;
     }
     .gallery img:hover { transform: scale(1.03); }
+
+    /* --- Modal (простое) --- */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
 
     /* --- Features --- */
     .features {
@@ -169,7 +147,6 @@
       padding: 40px 20px;
       background: rgba(255,255,255,0.03);
     }
-
     .feature {
       background: rgba(255,255,255,0.06);
       border-radius: 15px;
@@ -179,6 +156,7 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.35);
       transition: transform 0.3s;
     }
+    .feature:hover { transform: scale(1.05); }
     .feature h3 { font-size: 1.25rem; margin-bottom: 8px; color: #ffcc00; }
 
     /* --- Footer --- */
@@ -191,7 +169,7 @@
     }
     .footer a { color: #ffcc00; text-decoration: none; }
 
-    /* AR overlay (keeps previous functionality available) */
+    /* AR overlay */
     .ar-scene {
       display: none;
       width: 100%;
@@ -234,9 +212,6 @@
   <section class="hero">
     <h1>Добро пожаловать в Союзмультпарк 🎉</h1>
     <p>Попробуй технологии дополненной реальности прямо здесь на сайте — а внутри парка тебя ждут десятки уникальных развлечений, где оживают любимые герои мультфильмов!</p>
-
-    <!-- MAIN: открывает index.html (в той же вкладке). 
-         Если хочешь открывать в новой вкладке — добавь target="_blank" в <a>. -->
     <a id="openARButton" href="index.html" role="button" aria-label="Открыть index.html">🚀 Попробовать AR</a>
   </section>
 
@@ -245,8 +220,7 @@
     <h2 id="aboutTitle">Что такое Союзмультпарк?</h2>
     <p>Это культурно-развлекательный центр нового поколения, где классика советской и российской анимации встречается с новейшими технологиями. Вас ждут более 30 аттракционов на площади 2000 м²: от дополненной и виртуальной реальности до интерактивных мастерских и мультстудий.</p>
 
-    <div class="gallery" aria-hidden="false">
-      <!-- Поставь свои реальные пути к картинкам -->
+    <div class="gallery">
       <img src="1.jpg" alt="Аттракцион 1">
       <img src="2.jpg" alt="Аттракцион 2">
       <img src="3.jpg" alt="Аттракцион 3">
@@ -255,6 +229,11 @@
       <img src="7.jpg" alt="Аттракцион 6">
     </div>
   </section>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" onclick="closeModal()">
+    <img id="modal-img" src="" alt="Просмотр изображения">
+  </div>
 
   <!-- Features -->
   <section class="features">
@@ -274,15 +253,13 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <p>Официальный сайт: <a id="officialLink" href="https://souzmultpark.ru/" target="_blank" rel="noopener">souzmultpark.ru</a></p>
+    <p>Официальный сайт: <a href="https://souzmultpark.ru/" target="_blank" rel="noopener">souzmultpark.ru</a></p>
     <p>© Союзмультпарк, 2023. Все права защищены.</p>
   </footer>
 
-  <!-- AR Scene (встраиваемый оверлей) -->
+  <!-- AR Scene -->
   <div id="arScene" class="ar-scene" aria-hidden="true">
     <button class="close-button" id="closeAR">✕</button>
-
-    <!-- Здесь оставлен старый A-Frame блок, если у тебя подключены библиотеки -->
     <a-scene mindar-image="imageTargetSrc: ./targets.mind" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
       <a-assets>
         <a-asset-item id="revolver" src="models/revolver/scene.gltf"></a-asset-item>
@@ -295,11 +272,8 @@
   </div>
 
   <script>
-    // -----------------------
-    // Theme: toggle + save
-    // -----------------------
+    // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
-
     function applyTheme(theme) {
       if (theme === 'light') {
         document.body.classList.add('light-theme');
@@ -308,42 +282,51 @@
         document.body.classList.remove('light-theme');
         themeToggle.textContent = '🌗 Тёмная';
       }
-      try { localStorage.setItem('siteTheme', theme); } catch (e) { /* localStorage может быть недоступен */ }
+      try { localStorage.setItem('siteTheme', theme); } catch (e) {}
     }
-
-    // init from localStorage (или по умолчанию тёмная)
     (function initTheme() {
       let saved = null;
-      try { saved = localStorage.getItem('siteTheme'); } catch(e) { /* ignore */ }
+      try { saved = localStorage.getItem('siteTheme'); } catch(e) {}
       if (saved === 'light') applyTheme('light'); else applyTheme('dark');
     })();
-
     themeToggle.addEventListener('click', () => {
       const isLight = document.body.classList.contains('light-theme');
       applyTheme(isLight ? 'dark' : 'light');
     });
 
-    // -----------------------
-    // AR overlay open/close
-    // -----------------------
+    // AR overlay
     const openInlineBtn = document.getElementById('openInlineARButton');
     const arScene = document.getElementById('arScene');
     const closeARBtn = document.getElementById('closeAR');
-
-    openInlineBtn.addEventListener('click', () => {
-      arScene.style.display = 'block';
-      arScene.setAttribute('aria-hidden', 'false');
-      // optionally stop page scroll on mobile:
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-    });
-
+    if (openInlineBtn) {
+      openInlineBtn.addEventListener('click', () => {
+        arScene.style.display = 'block';
+        arScene.setAttribute('aria-hidden', 'false');
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      });
+    }
     closeARBtn.addEventListener('click', () => {
       arScene.style.display = 'none';
       arScene.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     });
+
+    // Modal for gallery (как в "Сочи одежда")
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modal-img");
+
+    document.querySelectorAll(".gallery img").forEach(img => {
+      img.addEventListener("click", () => {
+        modal.style.display = "flex";
+        modalImg.src = img.src;
+      });
+    });
+
+    function closeModal() {
+      modal.style.display = "none";
+    }
   </script>
 </body>
 </html>
