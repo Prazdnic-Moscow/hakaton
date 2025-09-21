@@ -1,0 +1,3 @@
+[submodule "ar-part"]
+	path = ar-part
+	url = https://github.com/akihiko47/MALAK-AR-Park.git
