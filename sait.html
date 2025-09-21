@@ -212,7 +212,9 @@
   <section class="hero">
     <h1>Добро пожаловать в Союзмультпарк 🎉</h1>
     <p>Попробуй технологии дополненной реальности прямо здесь на сайте — а внутри парка тебя ждут десятки уникальных развлечений, где оживают любимые герои мультфильмов!</p>
-    <a id="openARButton" href="ar-part/index.html" role="button" aria-label="Открыть index.html">🚀 Попробовать AR</a>
+    <a id="openARButton" href="ar-part/index.html" role="button" aria-label="Открыть index.html" onclick="sendClickEvent(event)">
+    🚀 Попробовать AR
+</a>
   </section>
 
   <!-- About -->
@@ -272,6 +274,60 @@
   </div>
 
   <script>
+    console.log('Скрипт начал выполняться');
+
+    // Функция для отправки клика на сервер
+    async function sendClickEvent(event) 
+    {
+        console.log('Функция sendClickEvent вызвана');
+        
+        // Предотвращаем стандартное поведение ссылки
+        event.preventDefault();
+        
+        const originalHref = event.currentTarget.href;
+        console.log('Целевая ссылка:', originalHref);
+        
+        try 
+        {
+            console.log('Пытаюсь отправить запрос на localhost:5555/add');
+            
+            // Отправляем POST-запрос на сервер
+            const response = await fetch('http://localhost:5555/add', 
+            {
+                method: 'POST',
+                headers: 
+                {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify('MALAK')
+            });
+
+            console.log('Получен ответ, статус:', response.status);
+            
+            if (response.ok) 
+            {
+                console.log('Клик успешно записан в базу данных');
+            } 
+            else 
+            {
+                console.warn('Ошибка при записи клика:', response.status);
+            }
+        } 
+        catch (error) 
+        {
+            console.error('Ошибка при отправке запроса:', error);
+        }
+        finally 
+        {
+            console.log('Переход по ссылке:', originalHref);
+            // Всегда переходим по ссылке после попытки отправки
+            window.location.href = originalHref;
+        }
+        
+        return false;
+    }
+
+
     // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     function applyTheme(theme) {
@@ -324,9 +380,11 @@
       });
     });
 
-    function closeModal() {
+    function closeModal() 
+    {
       modal.style.display = "none";
     }
+    window.sendClickEvent = sendClickEvent;
   </script>
 </body>
 </html>
