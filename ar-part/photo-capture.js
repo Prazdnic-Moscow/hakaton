@@ -54,26 +54,7 @@ class ARPhotoCapture
         });
       }
     });
-
-    if (this.video) 
-    {
-      // Проверяем и улучшаем качество видео
-      navigator.mediaDevices.getUserMedia({
-        video: 
-        {
-          facingMode: 'environment',
-          width: { ideal: 3840, min: 1920 },
-          height: { ideal: 2160, min: 1080 },
-          frameRate: { ideal: 60, min: 30 }
-        }
-      }).then(stream => {
-        this.video.srcObject = stream;
-        console.log('Improved video stream applied');
-      }).catch(err => {
-        console.error('Error improving video quality:', err);
-      });
-    }
-}
+  }
 
   initEvents() 
   {
@@ -176,7 +157,7 @@ class ARPhotoCapture
       ctx.drawImage(this.arCanvas, arOffsetX, arOffsetY, arDrawWidth, arDrawHeight);
       console.log('AR content drawn with fit');
 
-      const dataURL = combinedCanvas.toDataURL('image/jpeg', 1.0);
+      const dataURL = combinedCanvas.toDataURL('image/jpg');
       this.capturedPhoto.src = dataURL;
       console.log('Photo captured successfully');
       

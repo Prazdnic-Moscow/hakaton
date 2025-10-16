@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <a-scene mindar-image="imageTargetSrc: ./targets-night.mind; filterMinCF:0.0001; filterBeta: 0.001; warmupTolerance: 3; missTolerance: 1; uiScanning: #custom-scanning-overlay; autoStart: true; video: {facingMode: 'environment', width: {ideal: 3840, min: 1920}, height: {ideal: 2160, min: 1080}}; resolution: 1920" xr-mode-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: ./targets-night.mind; filterMinCF:0.0001; filterBeta: 0.001; warmupTolerance: 3; missTolerance: 1; uiScanning: #custom-scanning-overlay; resolution: 1920; video: {width: {ideal: 4096, min: 1920}, height: {ideal: 2160, min: 1920}}" xr-mode-ui="enabled: false">
         <script src="photo-capture.js"></script>
         <a-assets>
             <a-asset-item id="scene1" src="models/scene1/scene1.gltf"></a-asset-item>
@@ -23,7 +23,7 @@
             <div class="scanner"></div>
             <div id="custom-scanning-text">
                 <div class="scanning-content">
-                    <h1>Добро пожаловать!</h1>
+                    <h2>Добро пожаловать!</h2>
                     <p>Наведите камеру на скульптуру, убедитесь что стоите прямо перед ней и на улице светло</p>
                 </div>
             </div>
