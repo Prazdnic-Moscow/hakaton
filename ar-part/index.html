@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo with Favorite Characters in Augmented Reality</title>
+
+    <script src="aframe.min.js"></script>
+    <script src="mindar-image-aframe.prod.js"></script>
+    <script src="aframe-extras.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a-scene mindar-image="imageTargetSrc: ./targets-night.mind; filterMinCF:0.0001; filterBeta: 0.001; warmupTolerance: 3; missTolerance: 1; uiScanning: #custom-scanning-overlay; autoStart: true; video: {facingMode: 'environment', width: {ideal: 3840, min: 1920}, height: {ideal: 2160, min: 1080}}; resolution: 1920" xr-mode-ui="enabled: false">
+        <script src="photo-capture.js"></script>
+        <a-assets>
+            <a-asset-item id="scene1" src="models/scene1/scene1.gltf"></a-asset-item>
+            <a-asset-item id="scene2" src="models/scene2/scene2.gltf"></a-asset-item>
+        </a-assets>
+        
+        <div id="custom-scanning-overlay" class="hidden">
+            <div class="scanner"></div>
+            <div id="custom-scanning-text">
+                <div class="scanning-content">
+                    <h1>Добро пожаловать!</h1>
+                    <p>Наведите камеру на скульптуру, убедитесь что стоите прямо перед ней и на улице светло</p>
+                </div>
+            </div>
+        </div>
+        
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <!-- Scene1 M -->
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-gltf-model 
+                rotation="30 0 0" 
+                position="0 -0.3 0" 
+                scale="0.1 0.1 0.1" 
+                src="#scene1"
+                animation-mixer>
+            </a-gltf-model>
+        </a-entity>
+
+        <!-- Scene2 M -->
+        <a-entity mindar-image-target="targetIndex: 1">
+            <a-gltf-model 
+                rotation="15 0 0" 
+                position="0 -0.15 0" 
+                scale="0.1 0.1 0.1" 
+                src="#scene2"
+                animation-mixer>
+            </a-gltf-model>
+        </a-entity>
+    </a-scene>
+
+    <div id="photoModal" style="display: none;">
+        <img id="capturedPhoto" src="" alt="Photo" />
+        <p id="ticketInfo" style="color: white; text-align: center; margin: 10px 0; font-size: 16px;">
+         Сохраняй и заходи во внутрь, при покупке билета — распечатаем фото и дадим скидку в 10% !
+        </p>
+        <div id="photoButtons">
+            <button id="saveBtn">Сохранить</button>
+            <button id="ticketBtn">Билет</button>
+            <button id="backBtn">Назад</button>
+        </div>
+    </div>
+
+    <button id="photoBtn" title="Take Photo"></button>
+</body>
+</html>
